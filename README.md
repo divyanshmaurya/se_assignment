@@ -68,13 +68,20 @@ The app is then live at `http://swe1-app-env.<id>.us-east-1.elasticbeanstalk.com
 To ship later changes: commit them, then run `eb deploy` (the EB CLI deploys the
 latest git commit).
 
-### What `.ebextensions/django.config` does
+### Elastic Beanstalk configuration
+
+`.ebextensions/django.config`:
 
 - Points EB at `mysite.wsgi:application` and sets `DJANGO_SETTINGS_MODULE`.
 - Sets `DJANGO_DEBUG=False` so production runs with `DEBUG` off.
-- On every deploy: runs `migrate`, loads the sample polls, runs
-  `collectstatic`, and gives the `webapp` user write access to the SQLite file.
 - Serves `/static` (admin CSS/JS) directly from nginx.
+
+`.platform/scripts/setup_db.sh` runs `migrate`, loads the sample polls, runs
+`collectstatic`, and gives the `webapp` user write access to the SQLite file.
+It is called from both `.platform/hooks/predeploy` (`eb deploy`) and
+`.platform/confighooks/predeploy` (configuration changes such as `eb setenv`),
+because both can replace the app directory with a fresh copy that has no
+database.
 
 `ALLOWED_HOSTS` already includes `.elasticbeanstalk.com`, so any EB environment
 domain works. For a custom domain, set `eb setenv DJANGO_ALLOWED_HOSTS=example.com`.
@@ -82,12 +89,13 @@ domain works. For a custom domain, set `eb setenv DJANGO_ALLOWED_HOSTS=example.c
 ### Notes
 
 - The database is SQLite on the instance. It is rebuilt (and re-seeded with the
-  sample polls) on each `eb deploy`, so votes and admin users do not survive a
+  sample polls) on each `eb deploy` and `eb setenv`, so votes and admin users do not survive a
   redeploy. To use `/admin/` on EB: `eb ssh`, then
   `cd /var/app/current && sudo /var/app/venv/*/bin/python3 manage.py createsuperuser`.
 - If the environment is "Degraded" because there is no default VPC, create one
   in the AWS VPC console (Actions → Create default VPC) and run `eb create` again.
-- Useful commands: `eb status`, `eb health`, `eb logs`.
+- Useful commands: `eb status`, `eb health`, `eb logs` (500 errors are logged
+  with their traceback in `web.stdout.log`).
 - Set a billing alarm
   ([CloudWatch guide](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/monitor_estimated_charges_with_cloudwatch.html)),
   and run `eb terminate swe1-app-env` once the assignment has been graded.

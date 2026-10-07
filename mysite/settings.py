@@ -132,6 +132,19 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
 
 
+# Logging
+# Send errors (including 500 tracebacks) to the console, which Elastic
+# Beanstalk collects in web.stdout.log (`eb logs`). Django's default only
+# prints them when DEBUG is on.
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django": {"handlers": ["console"], "level": "INFO"}},
+}
+
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
