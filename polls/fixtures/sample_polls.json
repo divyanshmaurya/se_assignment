@@ -1,0 +1,17 @@
+[
+  {"model": "polls.question", "pk": 1, "fields": {"question_text": "What's up?", "pub_date": "2026-10-07T12:00:00Z"}},
+  {"model": "polls.choice", "pk": 1, "fields": {"question": 1, "choice_text": "Not much", "votes": 0}},
+  {"model": "polls.choice", "pk": 2, "fields": {"question": 1, "choice_text": "The sky", "votes": 0}},
+  {"model": "polls.choice", "pk": 3, "fields": {"question": 1, "choice_text": "Just hacking again", "votes": 0}},
+
+  {"model": "polls.question", "pk": 2, "fields": {"question_text": "What's your favorite programming language?", "pub_date": "2026-10-07T12:05:00Z"}},
+  {"model": "polls.choice", "pk": 4, "fields": {"question": 2, "choice_text": "Python", "votes": 0}},
+  {"model": "polls.choice", "pk": 5, "fields": {"question": 2, "choice_text": "JavaScript", "votes": 0}},
+  {"model": "polls.choice", "pk": 6, "fields": {"question": 2, "choice_text": "Java", "votes": 0}},
+  {"model": "polls.choice", "pk": 7, "fields": {"question": 2, "choice_text": "C++", "votes": 0}},
+
+  {"model": "polls.question", "pk": 3, "fields": {"question_text": "Which cloud provider do you use most?", "pub_date": "2026-10-07T12:10:00Z"}},
+  {"model": "polls.choice", "pk": 8, "fields": {"question": 3, "choice_text": "AWS", "votes": 0}},
+  {"model": "polls.choice", "pk": 9, "fields": {"question": 3, "choice_text": "Azure", "votes": 0}},
+  {"model": "polls.choice", "pk": 10, "fields": {"question": 3, "choice_text": "Google Cloud", "votes": 0}}
+]
