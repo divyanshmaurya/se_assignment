@@ -1,0 +1,37 @@
+language: python
+dist: jammy
+python:
+  - "3.12"  # Django 6.1 requires Python 3.12+
+
+install:
+  - pip install -r requirements-dev.txt
+
+script:
+  # Any formatting or lint problem fails the build.
+  - black --check .
+  - flake8 .
+  # Run the test suite under coverage.py.
+  - coverage run manage.py test
+  - coverage report
+
+after_success:
+  # Upload coverage to Coveralls (needs COVERALLS_REPO_TOKEN in Travis settings).
+  - coveralls
+
+# Deploy to Elastic Beanstalk only after the checks and tests above pass,
+# and only for pushes to main (Travis never deploys pull request builds).
+#
+# Credentials and the bucket come from environment variables set in the
+# Travis repository settings, never from this file:
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET
+deploy:
+  provider: elasticbeanstalk
+  edge: true  # use dpl v2
+  region: us-east-1
+  app: swe1-app
+  env: swe1-app-env
+  bucket_path: swe1-app
+  wait_until_deployed: true
+  cleanup: true
+  on:
+    branch: main

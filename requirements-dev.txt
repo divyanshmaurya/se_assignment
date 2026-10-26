@@ -1,0 +1,7 @@
+# Tools used by CI (Travis) and for local development.
+# Elastic Beanstalk installs only requirements.txt.
+-r requirements.txt
+black==26.5.1
+flake8==7.4.1
+coverage
+coveralls

@@ -1,5 +1,8 @@
 # Django Polls on AWS Elastic Beanstalk
 
+[![Build Status](https://app.travis-ci.com/divyanshmaurya/se_assignment.svg?branch=main)](https://app.travis-ci.com/divyanshmaurya/se_assignment)
+[![Coverage Status](https://coveralls.io/repos/github/divyanshmaurya/se_assignment/badge.svg?branch=main)](https://coveralls.io/github/divyanshmaurya/se_assignment?branch=main)
+
 The polls application from the official Django tutorial
 ([parts 1–4](https://docs.djangoproject.com/en/6.1/intro/tutorial01/)),
 configured for deployment to AWS Elastic Beanstalk.
@@ -12,11 +15,14 @@ configured for deployment to AWS Elastic Beanstalk.
 ## Project layout
 
 ```
+.travis.yml                    CI: black, flake8, tests + coverage, EB deploy
+.flake8 / .coveragerc          flake8 and coverage.py settings
 .ebextensions/django.config    Elastic Beanstalk settings + deploy commands
 mysite/                        Django project (settings, urls, wsgi)
 polls/                         Polls app (models, views, urls, templates)
 polls/fixtures/sample_polls.json  Sample questions loaded on every deploy
 requirements.txt               Python dependencies (EB installs these)
+requirements-dev.txt           CI/dev tools (black, flake8, coverage, coveralls)
 manage.py
 ```
 
@@ -32,7 +38,32 @@ python manage.py createsuperuser         # optional, for /admin/
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/polls/. Run the tests with `python manage.py test polls`.
+Open http://127.0.0.1:8000/polls/. Run the tests with `python manage.py test`.
+
+## Continuous integration
+
+Travis CI ([`.travis.yml`](.travis.yml)) runs on every push and pull request:
+
+1. `black --check .` fails the build if any file is not black-formatted.
+2. `flake8 .` lints the code (max line length 88 to match black, see [`.flake8`](.flake8)).
+3. `coverage run manage.py test` runs the test suite under coverage.py, and
+   `coveralls` reports the result to [Coveralls](https://coveralls.io/github/divyanshmaurya/se_assignment).
+4. If everything passes on `main`, Travis deploys the app to the
+   `swe1-app-env` Elastic Beanstalk environment.
+
+Run the same checks locally:
+
+```bash
+pip install -r requirements-dev.txt
+black --check .
+flake8 .
+coverage run manage.py test && coverage report
+```
+
+Travis repository settings need these environment variables (not displayed in
+the build log): `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET`
+(the EB bucket, `elasticbeanstalk-us-east-1-<account-id>`) and
+`COVERALLS_REPO_TOKEN`.
 
 ## Deploy to Elastic Beanstalk
 

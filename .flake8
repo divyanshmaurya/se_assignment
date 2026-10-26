@@ -1,0 +1,14 @@
+[flake8]
+# Match black's default line length so the two tools agree.
+max-line-length = 88
+# E203 (whitespace before ':') and W503 (line break before binary operator)
+# conflict with black's formatting.
+extend-ignore = E203, W503
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    .venv,
+    env,
+    static,
+    */migrations/*

@@ -22,6 +22,12 @@ class QuestionModelTests(TestCase):
         question = create_question("Old question.", days=-2)
         self.assertIs(question.was_published_recently(), False)
 
+    def test_str_returns_text(self):
+        question = create_question("Favorite color?")
+        choice = question.choice_set.create(choice_text="Blue")
+        self.assertEqual(str(question), "Favorite color?")
+        self.assertEqual(str(choice), "Blue")
+
 
 class PollsViewTests(TestCase):
     def setUp(self):
@@ -54,7 +60,9 @@ class PollsViewTests(TestCase):
             reverse("polls:vote", args=(self.question.id,)),
             {"choice": self.choice.id},
         )
-        self.assertRedirects(response, reverse("polls:results", args=(self.question.id,)))
+        self.assertRedirects(
+            response, reverse("polls:results", args=(self.question.id,))
+        )
         self.choice.refresh_from_db()
         self.assertEqual(self.choice.votes, 1)
         response = self.client.get(reverse("polls:results", args=(self.question.id,)))
