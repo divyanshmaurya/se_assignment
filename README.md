@@ -51,6 +51,8 @@ Travis CI ([`.travis.yml`](.travis.yml)) runs on every push and pull request:
 4. If everything passes on `main`, Travis deploys the app to the
    `swe1-app-env` Elastic Beanstalk environment.
 
+Live app: http://swe1-app-env.eba-sehcqzb2.us-east-1.elasticbeanstalk.com/polls/
+
 Run the same checks locally:
 
 ```bash
